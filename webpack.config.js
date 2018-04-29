@@ -1,12 +1,17 @@
 const webpack = require('webpack');
+
 module.exports = {
-	entry: [ 'react-hot-loader/patch', './src/index.js' ],
+	entry: [ 'babel-polyfill', 'react-hot-loader/patch', './src/index.js' ],
 	module: {
 		rules: [
 			{
 				test: /\.(js|jsx)$/,
 				exclude: /node_modules/,
 				use: [ 'babel-loader' ]
+			},
+			{
+				test: /\.css/,
+				loader: 'style-loader!css-loader'
 			}
 		]
 	},
