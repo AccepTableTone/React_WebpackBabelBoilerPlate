@@ -1,31 +1,53 @@
-const webpack = require('webpack');
+/**from node - get path and file systme */
+var path = require("path");
+const fs = require("fs");
+/**to make a copy of our html page with the js references */
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+/**ahhhhh webpack   e!--[../] */
+const webpack = require("webpack");
+/**we want to sort out the paths for any each alias we create */
+const appDirectory = fs.realpathSync(process.cwd());
+const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
 module.exports = {
-	entry: [ 'babel-polyfill', 'react-hot-loader/patch', './src/index.js' ],
-	module: {
-		rules: [
-			{
-				test: /\.(js|jsx)$/,
-				exclude: /node_modules/,
-				use: [ 'babel-loader' ]
-			},
-			{
-				test: /\.css/,
-				loader: 'style-loader!css-loader'
-			}
-		]
-	},
-	resolve: {
-		extensions: [ '*', '.js', '.jsx' ]
-	},
-	output: {
-		path: __dirname + '/dist',
-		publicPath: '/',
-		filename: 'bundle.js'
-	},
-	plugins: [ new webpack.HotModuleReplacementPlugin() ],
-	devServer: {
-		contentBase: './dist',
-		hot: true
-	}
+  entry: "./index.js",
+  module: {
+    rules: [
+      { test: /\.(js|jsx)$/, use: "babel-loader" },
+      { test: /\.css$/, use: ["style-loader", "css-loader"] }
+    ]
+  },
+  output: {
+    path: path.resolve(__dirname, "build"),
+    filename: "main.bundle.js",
+    chunkFilename: "vendors.bundle.js"
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
+    /**create list of folder aliases here */
+    alias: {
+      components: resolveApp("./src/components/")
+    }
+  },
+  mode: "development",
+  plugins: [
+    /**uncomment this to get the bundle analysis page when running or building */
+    // new BundleAnalyzerPlugin(),
+    new HtmlWebpackPlugin({
+      template: "./index.html"
+    })
+  ],
+  /**chop the js into 2 piles */
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          chunks: "all"
+        }
+      }
+    }
+  }
 };
