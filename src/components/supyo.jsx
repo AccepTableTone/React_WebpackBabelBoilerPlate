@@ -1,7 +1,7 @@
 import React from "react";
 
 const SupYo = () => {
-  return <div>Sup yo!</div>;
+    return <div className="css-stuff">Sup yo!</div>;
 };
 
 export default SupYo;
