@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import SupYo from "components/supyo";
-import "./styles/site.css";
+import "./styles/app.scss";
 
 class App extends React.Component {
     render() {
